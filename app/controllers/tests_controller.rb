@@ -2,9 +2,10 @@ class TestsController < Simpler::Controller
 
   def index
     status 201
-    custom_headers['Testing'] = 'The headers'
+    headers['Testing'] = 'The headers'
     @time = Time.now
-    render plain: 'tests/list'
+    # render 'tests/list'
+    render plain: 'Hello'
   end
 
   def create

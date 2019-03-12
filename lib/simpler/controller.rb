@@ -1,5 +1,4 @@
 require_relative 'view'
-require_relative 'controller/custom_headers'
 
 module Simpler
   class Controller
@@ -15,8 +14,8 @@ module Simpler
     def make_response(action)
       @request.env['simpler.controller'] = self
       @request.env['simpler.action'] = action
-      params[':id'] = @request.env[':id'] if @request.env[':id']
 
+      get_params
       set_default_headers
       send(action)
       write_response
@@ -28,8 +27,8 @@ module Simpler
       @response.status = code
     end
 
-    def custom_headers
-      CustomHeaders.new(@response)
+    def headers
+      @response
     end
 
     private
@@ -56,12 +55,17 @@ module Simpler
       @request.params
     end
 
+    def get_params
+      @request.params['method'] = @request.env['REQUEST_METHOD']
+      @request.env['simpler.params'].each do |param_key, param_value|
+        @request.params[param_key] = param_value
+      end
+    end
+
     def render(template)
-      if template[:plain]
-        @response['Content-Type'] = 'text/plain'
-        @request.env['simpler.template'] = template[:plain]
+      if template.is_a?(Hash) && template[:plain]
+        @response.write(template[:plain])
       else
-        @response['Conent-Type'] = 'text/html'
         @request.env['simpler.template'] = template
       end
     end

@@ -16,7 +16,7 @@ class AppLogger
   def log_body(env)
     @env = env
     if controller
-      "\nRequest: #{env['REQUEST_METHOD']} #{env['REQUEST_PATH']}\n" +
+      "\nRequest: #{env['REQUEST_METHOD']} #{env['REQUEST_PATH']}" + "#{env['QUERY_STRING']}\n" +
       "Handler: #{controller.class.name}\##{action}\n" +
       "Parametrs: #{controller.request.params}\n" +
       "Response: #{controller.response.status}, #{controller.response['Content-Type']}, #{env['simpler.template']} \n"
